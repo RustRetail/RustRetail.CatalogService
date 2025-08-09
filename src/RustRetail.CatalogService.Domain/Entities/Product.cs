@@ -22,9 +22,11 @@ namespace RustRetail.CatalogService.Domain.Entities
         public List<ProductImage> Images { get; set; } = new();
 
         [BsonElement("category_id")]
-        public string CategoryId { get; set; } = string.Empty;
+        [BsonRepresentation(BsonType.String)]
+        public Guid CategoryId { get; set; }
 
         [BsonElement("brand_id")]
-        public string? BrandId { get; set; } = string.Empty;
+        [BsonRepresentation(BsonType.String)]
+        public Guid? BrandId { get; set; }
     }
 }

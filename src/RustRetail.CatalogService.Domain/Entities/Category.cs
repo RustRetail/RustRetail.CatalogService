@@ -14,6 +14,7 @@ namespace RustRetail.CatalogService.Domain.Entities
 
         // For subcategories
         [BsonElement("parent_category_id")]
+        [BsonRepresentation(BsonType.String)]
         public Guid? ParentCategoryId { get; set; } 
     }
 }
