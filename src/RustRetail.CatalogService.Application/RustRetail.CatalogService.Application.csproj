@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RustRetail.CatalogService.Domain\RustRetail.CatalogService.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
