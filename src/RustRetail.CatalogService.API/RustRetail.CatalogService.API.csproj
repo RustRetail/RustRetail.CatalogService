@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RustRetail.CatalogService.Infrastructure\RustRetail.CatalogService.Infrastructure.csproj" />
     <ProjectReference Include="..\RustRetail.CatalogService.Persistence\RustRetail.CatalogService.Persistence.csproj" />
   </ItemGroup>
 
