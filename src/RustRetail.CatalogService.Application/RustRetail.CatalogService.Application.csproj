@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RustRetail.CatalogService.Contracts\RustRetail.CatalogService.Contracts.csproj" />
     <ProjectReference Include="..\RustRetail.CatalogService.Domain\RustRetail.CatalogService.Domain.csproj" />
   </ItemGroup>
 
