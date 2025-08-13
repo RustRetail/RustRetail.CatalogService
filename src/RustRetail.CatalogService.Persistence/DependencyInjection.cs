@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using RustRetail.CatalogService.Domain.Abstractions.Database;
 using RustRetail.CatalogService.Persistence.Database;
 
 namespace RustRetail.CatalogService.Persistence
@@ -12,7 +13,7 @@ namespace RustRetail.CatalogService.Persistence
         {
             return services
                 .RegisterMongoDbClient()
-                .AddSingleton<CatalogDbContext>(); ;
+                .AddSingleton<ICatalogDbContext, CatalogDbContext>(); ;
         }
 
         private static IServiceCollection RegisterMongoDbClient(this IServiceCollection services)

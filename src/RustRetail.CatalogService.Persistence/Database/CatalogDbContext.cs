@@ -1,12 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using RustRetail.CatalogService.Domain.Abstractions.Database;
 using RustRetail.CatalogService.Domain.Constants.Database;
 using RustRetail.CatalogService.Domain.Entities;
 
 namespace RustRetail.CatalogService.Persistence.Database
 {
-    public class CatalogDbContext
+    public class CatalogDbContext : ICatalogDbContext
     {
         readonly IMongoDatabase _database;
         readonly ILogger<CatalogDbContext> _logger;
