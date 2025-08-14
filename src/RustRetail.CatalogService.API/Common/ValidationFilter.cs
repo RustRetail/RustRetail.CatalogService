@@ -10,15 +10,14 @@ namespace RustRetail.CatalogService.API.Common
             EndpointFilterInvocationContext context,
             EndpointFilterDelegate next)
         {
-            var validators = context.HttpContext.RequestServices.GetServices<IValidator<TRequest>>();
-            if (validators is null || validators.Count() <= 0)
-                return await next(context);
-
             var request = context.Arguments.OfType<TRequest>().FirstOrDefault();
             if (request is null)
                 return ResultExtension.HandleFailure(
                     Result.Failure(ValidationErrors.RequestBodyMissing),
                     context.HttpContext);
+            var validators = context.HttpContext.RequestServices.GetServices<IValidator<TRequest>>();
+            if (validators is null || validators.Count() <= 0)
+                return await next(context);
 
             var validationResults = await Task.WhenAll(
                 validators.Select(validator => validator.ValidateAsync(request)));

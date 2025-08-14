@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
+using RustRetail.CatalogService.Domain.Errors.Common;
 using RustRetail.SharedKernel.Domain.Abstractions;
-using System.Diagnostics;
 
 namespace RustRetail.CatalogService.API.Middlewares
 {
@@ -10,7 +10,7 @@ namespace RustRetail.CatalogService.API.Middlewares
         ILogger<GlobalExceptionHandler> logger,
         IHostEnvironment environment) : IExceptionHandler
     {
-        const string ErrorCode = "CatalogService.GlobalExceptionHandler.UnexpectedError";
+        const string ErrorCode = "CatalogService.UnexpectedError";
 
         public async ValueTask<bool> TryHandleAsync(
             HttpContext httpContext,
@@ -19,28 +19,62 @@ namespace RustRetail.CatalogService.API.Middlewares
         {
             logger.LogError(exception, "Unexpected error occurred: {Message}", exception.Message);
 
-            var extension = new Dictionary<string, object?>();
-            extension.TryAdd("requestId", httpContext.TraceIdentifier);
-            Activity? activity = httpContext.Features.Get<IHttpActivityFeature>()?.Activity;
-            extension.TryAdd("traceId", activity?.Id);
-            var error = Error.Failure(ErrorCode, $"Unexpected error occurred: {exception.Message}");
-            extension.TryAdd("errors", new[] { error });
+            ProblemDetails problemDetails;
 
-            var problemDetails = new ProblemDetails
+            if (exception is BadHttpRequestException badHttpRequestEx)
             {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Internal Server Error",
-                Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
-                Detail = environment.IsDevelopment() ? exception.Message : "Unexpected error occurred when trying to process request",
-                Extensions = extension,
-                Instance = $"{httpContext.Request.Method} {httpContext.Request.Path}",
+                problemDetails = CreateProblemDetails(httpContext,
+                    environment,
+                    exception,
+                    StatusCodes.Status400BadRequest,
+                    ValidationErrors.RequestBodyMissing,
+                    "Bad Request",
+                    "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1");
+                httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+            }
+            else
+            {
+                var error = Error.Failure(ErrorCode, $"Unexpected error occurred: {exception.Message}");
+                problemDetails = CreateProblemDetails(httpContext,
+                    environment,
+                    exception,
+                    StatusCodes.Status500InternalServerError,
+                    error,
+                    "Internal Server Error",
+                    "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1");
+                httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            }
+            await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
+            return true;
+        }
+
+        private static ProblemDetails CreateProblemDetails(
+            HttpContext httpContext,
+            IHostEnvironment env,
+            Exception exception,
+            int statusCode,
+            Error error,
+            string title,
+            string type)
+        {
+            var extension = new Dictionary<string, object?>
+            {
+                ["requestId"] = httpContext.TraceIdentifier,
+                ["traceId"] = httpContext.Features.Get<IHttpActivityFeature>()?.Activity?.Id,
+                ["errors"] = new[] { error }
             };
 
-            httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-
-            await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
-
-            return true;
+            return new ProblemDetails
+            {
+                Status = statusCode,
+                Title = title,
+                Type = type,
+                Detail = env.IsDevelopment()
+                    ? exception.Message
+                    : "Unexpected error occurred when trying to process request",
+                Extensions = extension,
+                Instance = $"{httpContext.Request.Method} {httpContext.Request.Path}"
+            };
         }
     }
 }
