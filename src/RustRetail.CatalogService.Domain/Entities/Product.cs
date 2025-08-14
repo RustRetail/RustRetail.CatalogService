@@ -23,10 +23,29 @@ namespace RustRetail.CatalogService.Domain.Entities
 
         [BsonElement("category_id")]
         [BsonRepresentation(BsonType.String)]
-        public Guid CategoryId { get; set; }
+        public Guid? CategoryId { get; set; }
 
         [BsonElement("brand_id")]
         [BsonRepresentation(BsonType.String)]
         public Guid? BrandId { get; set; }
+
+        public static Product Create(string name,
+            string description,
+            decimal price,
+            string sku,
+            Guid? categoryId = null,
+            Guid? brandId = null)
+        {
+            return new Product()
+            {
+                Id = Guid.NewGuid(),
+                Name = name,
+                Description = description,
+                Price = price,
+                SKU = sku,
+                CategoryId = categoryId,
+                BrandId = brandId
+            };
+        }
     }
 }
