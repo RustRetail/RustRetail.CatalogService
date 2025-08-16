@@ -2,7 +2,7 @@
 
 namespace RustRetail.CatalogService.Domain.Entities
 {
-    public class ProductImage
+    public sealed class ProductImage
     {
         [BsonElement("url")]
         public string Url { get; set; } = string.Empty;
@@ -17,6 +17,16 @@ namespace RustRetail.CatalogService.Domain.Entities
                 Url = url,
                 AltText = altText,
             };
+        }
+
+        public static string GenerateImageUrl(string productId, string imageName)
+        {
+            return $"{productId}/images/{imageName}";
+        }
+
+        public static string GenerateImageAltText(string productName, string imageName)
+        {
+            return $"Image {imageName} of product {productName}.";
         }
     }
 }

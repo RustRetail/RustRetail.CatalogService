@@ -5,11 +5,20 @@ using RustRetail.SharedKernel.Domain.Abstractions;
 
 namespace RustRetail.CatalogService.Domain.Entities.Common
 {
-    public abstract class MongoDbEntity : IHasKey<Guid>, IMongoDbTrackable
+    public abstract class MongoDbEntity<TKey> : IHasKey<TKey>, IMongoDbTrackable
     {
+        protected MongoDbEntity() { }
+
+        protected MongoDbEntity(TKey id)
+        {
+            Id = id;
+            CreatedDateTime = DateTime.UtcNow;
+            UpdatedDateTime = DateTime.UtcNow;
+        }
+
         [BsonId]
         [BsonRepresentation(BsonType.String)]
-        public Guid Id { get; set; }
+        public TKey Id { get; set; } = default!;
 
         [BsonElement("created_at")]
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]

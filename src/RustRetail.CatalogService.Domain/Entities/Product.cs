@@ -1,11 +1,17 @@
-﻿using MongoDB.Bson;
+﻿using Microsoft.AspNetCore.Http;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using RustRetail.CatalogService.Domain.Entities.Common;
+using RustRetail.CatalogService.Domain.Events.Product;
 
 namespace RustRetail.CatalogService.Domain.Entities
 {
-    public class Product : MongoDbEntity
+    public sealed class Product : MongoDbAggregateRoot<Guid>
     {
+        private Product(Guid id) : base(id)
+        {
+        }
+
         [BsonElement("name")]
         public string Name { get; set; } = string.Empty;
 
@@ -34,11 +40,11 @@ namespace RustRetail.CatalogService.Domain.Entities
             decimal price,
             string sku,
             Guid? categoryId = null,
-            Guid? brandId = null)
+            Guid? brandId = null,
+            IFormFileCollection? images = null)
         {
-            return new Product()
+            var product = new Product(Guid.NewGuid())
             {
-                Id = Guid.NewGuid(),
                 Name = name,
                 Description = description,
                 Price = price,
@@ -46,6 +52,8 @@ namespace RustRetail.CatalogService.Domain.Entities
                 CategoryId = categoryId,
                 BrandId = brandId
             };
+            product.AddDomainEvent(new ProductCreatedDomainEvent(product.Id, images));
+            return product;
         }
     }
 }

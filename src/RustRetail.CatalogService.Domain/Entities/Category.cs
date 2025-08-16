@@ -4,8 +4,12 @@ using RustRetail.CatalogService.Domain.Entities.Common;
 
 namespace RustRetail.CatalogService.Domain.Entities
 {
-    public class Category : MongoDbEntity
+    public class Category : MongoDbAggregateRoot<Guid>
     {
+        private Category(Guid id) : base(id)
+        {
+        }
+
         [BsonElement("name")]
         public string Name { get; set; } = string.Empty;
 
