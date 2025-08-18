@@ -52,7 +52,7 @@ namespace RustRetail.CatalogService.Domain.Entities
                 CategoryId = categoryId,
                 BrandId = brandId
             };
-            product.AddDomainEvent(new ProductCreatedDomainEvent(product.Id, images));
+            product.AddDomainEvent(new ProductCreatedDomainEvent(product.Id, name, images));
             return product;
         }
     }
