@@ -1,13 +1,16 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using RustRetail.CatalogService.Infrastructure.Storage;
 
 namespace RustRetail.CatalogService.Infrastructure
 {
     public static class DependencyInjection
     {
         public static IServiceCollection AddInfrastructure(
-            this IServiceCollection services)
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
-            return services;
+            return services.AddStorageServices(configuration);
         }
     }
 }

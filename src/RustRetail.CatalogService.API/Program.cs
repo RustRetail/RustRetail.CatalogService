@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.ConfigureApplicationOptions(builder.Configuration)
     .AddBuiltInServices()
     .AddPersistence()
-    .AddInfrastructure()
+    .AddInfrastructure(builder.Configuration)
     .AddApplication()
     .AddApi();
 builder.Host.UseSharedSerilog();
