@@ -63,6 +63,7 @@ namespace RustRetail.CatalogService.Application.Products.SearchProducts
             {
                 filters.Add(fb.Eq(p => p.SKU, request.SKU));
             }
+            filters.Add(fb.Eq(p => p.IsActive, true));
             var finalFilter = filters.Any()
                 ? fb.And(filters)
                 : fb.Empty;

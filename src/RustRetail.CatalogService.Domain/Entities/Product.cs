@@ -35,6 +35,9 @@ namespace RustRetail.CatalogService.Domain.Entities
         [BsonRepresentation(BsonType.String)]
         public Guid? BrandId { get; set; }
 
+        [BsonElement("is_active")]
+        public bool IsActive { get; set; } = false;
+
         public static Product Create(string name,
             string description,
             decimal price,
@@ -50,7 +53,8 @@ namespace RustRetail.CatalogService.Domain.Entities
                 Price = price,
                 SKU = sku,
                 CategoryId = categoryId,
-                BrandId = brandId
+                BrandId = brandId,
+                IsActive = true
             };
             product.AddDomainEvent(new ProductCreatedDomainEvent(product.Id, name, images));
             return product;

@@ -18,7 +18,7 @@ namespace RustRetail.CatalogService.Application.Products.GetById
             var product = await dbContext.Products.Find(p => p.Id == request.Id)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (product == null)
+            if (product == null || !product.IsActive)
             {
                 return Result.Failure<GetProductByIdResponse>(ProductErrors.ProductNotFound);
             }
