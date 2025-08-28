@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RustRetail.CatalogService.Infrastructure.MessageBrokers.RabbitMQ;
 using RustRetail.CatalogService.Infrastructure.Storage;
 
 namespace RustRetail.CatalogService.Infrastructure
@@ -10,7 +11,8 @@ namespace RustRetail.CatalogService.Infrastructure
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            return services.AddStorageServices(configuration);
+            return services.AddStorageServices(configuration)
+                .AddRabbitMQ(configuration);
         }
     }
 }
