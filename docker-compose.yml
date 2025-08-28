@@ -1,0 +1,16 @@
+name: RustRetail_CatalogService
+services:
+  rustretail.catalogservice.api:
+    container_name: rustretail.catalogservice.api
+    image: ${DOCKER_REGISTRY-}rustretailcatalogserviceapi
+    build:
+      context: .
+      dockerfile: src/RustRetail.CatalogService.API/Dockerfile
+    volumes:
+     - ./certs:/https:ro
+    env_file:
+     - .env
+networks:
+ default:
+  external:
+   name: rustretail_sharednetwork
