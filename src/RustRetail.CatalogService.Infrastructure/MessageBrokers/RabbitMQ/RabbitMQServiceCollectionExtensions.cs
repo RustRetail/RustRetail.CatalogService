@@ -18,7 +18,7 @@ namespace RustRetail.CatalogService.Infrastructure.MessageBrokers.RabbitMQ
                 {
                     var options = configuration.GetSection(RabbitMQOptions.SectionName).Get<RabbitMQOptions>();
                     ArgumentNullException.ThrowIfNull(options, nameof(options));
-                    cfg.Host(options.Host, options.VirtualHost, h =>
+                    cfg.Host(options.Host, (ushort)options.Port, options.VirtualHost, h =>
                     {
                         h.Username(options.UserName);
                         h.Password(options.Password);
