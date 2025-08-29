@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RustRetail.CatalogService.API.Common;
+using RustRetail.CatalogService.API.Configuration.Authorization;
 using RustRetail.CatalogService.Application.Common.Utilities;
 using RustRetail.CatalogService.Application.Products.CreateProduct;
 using RustRetail.CatalogService.Contracts.Products.CreateProduct;
@@ -17,7 +18,7 @@ namespace RustRetail.CatalogService.API.Endpoints.V1.Products
         {
             app.MapPost(Route, Handle)
                 .WithTags(Tags.Products)
-                .AllowAnonymous()
+                .RequireAuthorization(AuthorizationExtensions.AdministratorPolicy)
                 .MapToApiVersion(1)
                 .DisableAntiforgery()
                 .AddEndpointFilter<ValidationFilter<CreateProductRequest>>();
@@ -69,7 +70,9 @@ namespace RustRetail.CatalogService.API.Endpoints.V1.Products
                 .NotNull()
                 .WithMessage("Product's price is required.")
                 .Must(p => p > 0)
-                .WithMessage("Product's price must be larger than 0.");
+                .WithMessage("Product's price must be larger than 0.")
+                .PrecisionScale(11, 2, false)
+                .WithMessage("Product's price cannot exceeds 11 digits (integers and decimals) with maximum of 2 decimals.");
 
             RuleFor(p => p.Product.SKU)
                 .NotEmpty()
@@ -78,18 +81,16 @@ namespace RustRetail.CatalogService.API.Endpoints.V1.Products
                 .MaximumLength(20)
                 .WithMessage("Product's SKU cannot exceed 20 characters.");
 
-            RuleFor(p => p.Images)
-                .NotNull()
-                .NotEmpty()
-                .WithMessage("Product images list must be valid and contains image(s).")
-                .Must(i => i!.Count() > 0).WithMessage("Product must contains at least 1 image.")
+            When(p => p.Images is not null && p.Images.Count() > 0, () =>
+            {
+                RuleFor(p => p.Images)
                 .Must(i => i!.Count() <= 10).WithMessage("Product cannot have more than 10 images.");
-
-            RuleForEach(p => p.Images)
+                RuleForEach(p => p.Images)
                 .NotNull().WithMessage("Product's image cannot be null.")
                 .Must(ImageChecker.IsImageExtensionAllowed).WithMessage("Only support image with '.png', '.jpg' and '.jpeg' extensions.")
                 .Must(ImageChecker.IsImageSizeAllowed).WithMessage("Product image size cannot exceed 5 MB.")
                 .Must(ImageChecker.IsImageMimeTypeAllowed).WithMessage("Only support image with 'image/png' and 'image/jpeg' content types.");
+            });
         }
     }
 }

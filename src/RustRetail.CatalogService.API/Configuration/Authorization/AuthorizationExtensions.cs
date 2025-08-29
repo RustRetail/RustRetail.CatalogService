@@ -2,11 +2,13 @@
 {
     internal static class AuthorizationExtensions
     {
+        // Policies
         public const string AdministratorPolicy = nameof(AdministratorPolicy);
         public const string UserPolicy = nameof(UserPolicy);
         public const string AuthenticatedUserPolicy = nameof(AuthenticatedUserPolicy);
-        public const string Administrator = nameof(Administrator);
-        public const string User = nameof(User);
+        // Roles
+        const string Administrator = nameof(Administrator);
+        const string User = nameof(User);
 
         public static IServiceCollection ConfigureAuthorization(
             this IServiceCollection services)
