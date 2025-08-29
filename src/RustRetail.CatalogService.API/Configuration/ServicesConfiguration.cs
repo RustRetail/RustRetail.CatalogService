@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Http.Features;
 using RustRetail.CatalogService.API.Configuration.ApiVersioning;
+using RustRetail.CatalogService.API.Configuration.Authentication;
+using RustRetail.CatalogService.API.Configuration.Authorization;
 using RustRetail.CatalogService.API.Configuration.JsonSerialization;
 using RustRetail.CatalogService.API.Middlewares;
 using RustRetail.SharedInfrastructure.MinimalApi;
@@ -10,13 +12,15 @@ namespace RustRetail.CatalogService.API.Configuration
 {
     internal static class ServicesConfiguration
     {
-        internal static IServiceCollection AddApi(this IServiceCollection services)
+        internal static IServiceCollection AddApi(this IServiceCollection services, IConfiguration configuration)
         {
             return services.AddGlobalExceptionHandling()
                 .ConfigureApiVersioning()
                 .AddMinimalApi()
                 .AddValidatorsFromAssembly(typeof(ServicesConfiguration).Assembly)
-                .AddJsonSerializationConfiguration();
+                .AddJsonSerializationConfiguration()
+                .ConfigureJwtAuthentication(configuration)
+                .ConfigureAuthorization();
         }
 
         internal static IServiceCollection AddBuiltInServices(

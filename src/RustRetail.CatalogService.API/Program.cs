@@ -11,7 +11,7 @@ builder.Services.ConfigureApplicationOptions(builder.Configuration)
     .AddPersistence()
     .AddInfrastructure(builder.Configuration)
     .AddApplication()
-    .AddApi();
+    .AddApi(builder.Configuration);
 builder.Host.UseSharedSerilog();
 
 var app = builder.Build();

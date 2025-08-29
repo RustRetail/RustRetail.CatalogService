@@ -12,6 +12,7 @@ services:
       - AwsS3__SecretKey=${AwsS3__SecretKey}
       - AwsS3__BucketName=${AwsS3__BucketName}
       - AwsS3__AccessKey=${AwsS3__AccessKey}
+      - Jwt__SecretKey=${Jwt__SecretKey}
     ports:
       - "8084:8084"
       - "8085:8085"

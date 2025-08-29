@@ -13,6 +13,8 @@ namespace RustRetail.CatalogService.API.Configuration
             app.UseExceptionHandler();
             app.UseMinimalApiEndpoints();
             app.UseSharedSerilogRequestLogging();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             return app;
         }
