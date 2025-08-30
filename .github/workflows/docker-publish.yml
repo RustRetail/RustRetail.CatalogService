@@ -1,42 +1,42 @@
 name: Publish CatalogService Image
 
 on:
- push:
-  branches:
-  - main
+  push:
+    branches:
+      - main
 
 jobs:
   build-and-push:
-   runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-   permissions:
-    contents: read
-    packages: write
+    permissions:
+      contents: read
+      packages: write
 
-   steps:
-   - name: Checkout code
-     uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-   - name: Log in to GHCR
-     uses: docker/login-action@v3
-     with:
-      registry: ghcr.io
-      username: ${{ github.actor }}
-      password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-   - name: Extract metadata (tags, labels)
-     id: meta
-     uses: docker/metadata-action@v5
-     with:
-      images: ghcr.io/rustretail/rustretail.catalogservice
+      - name: Extract metadata (tags, labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/rustretail/rustretail.catalogservice
 
-   - name: Build and push Docker image
-     uses: docker/build-push-action@v5
-     with:
-      context: ./src
-      file: ./src/RustRetail.CatalogService.API/Dockerfile
-      push: true
-      tags: |
-       ghcr.io/rustretail/rustretail.catalogservice:latest
-       ghcr.io/rustretail/rustretail.catalogservice:${{ github.sha }}
-      labels: ${{ steps.meta.outputs.labels }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./src/RustRetail.CatalogService.API/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/rustretail/rustretail.catalogservice:latest
+            ghcr.io/rustretail/rustretail.catalogservice:${{ github.sha }}
+          labels: ${{ steps.meta.outputs.labels }}
