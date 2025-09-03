@@ -6,11 +6,10 @@ services:
     build:
       context: .
       dockerfile: src/RustRetail.CatalogService.API/Dockerfile
-    volumes:
-     - ./certs:/https:ro
     env_file:
      - .env
+    networks:
+     - rustretail_sharednetwork
 networks:
- default:
-  external:
-   name: rustretail_sharednetwork
+ rustretail_sharednetwork:
+  external: true
