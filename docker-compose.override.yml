@@ -1,11 +1,7 @@
 services:
   rustretail.catalogservice.api:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8084
-      - ASPNETCORE_HTTPS_PORTS=8085
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - MongoDbSettings__ConnectionString=${MongoDbSettings__ConnectionString}
       - MongoDbSettings__Database=${MongoDbSettings__Database}
       - RabbitMQ__Host=${RabbitMQ__Host}
@@ -14,10 +10,7 @@ services:
       - AwsS3__AccessKey=${AwsS3__AccessKey}
       - Jwt__SecretKey=${Jwt__SecretKey}
     ports:
-      - "8084:8084"
-      - "8085:8085"
+      - "8084:8080"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

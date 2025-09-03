@@ -9,7 +9,6 @@ namespace RustRetail.CatalogService.API.Configuration
     {
         internal static WebApplication ConfigureApplicationPipeline(this WebApplication app)
         {
-            app.UseHttpsRedirection();
             app.UseExceptionHandler();
             app.UseMinimalApiEndpoints();
             app.UseSharedSerilogRequestLogging();
